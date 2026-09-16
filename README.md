@@ -2,7 +2,7 @@
 
 Trabajo Práctico N°2 de la cátedra **Paradigmas de Programación** (UTN - FRM), Unidad 2: Organización, reutilización y recursos avanzados en POO.
 
-Este proyecto escala el modelo desarrollado en el [TP1](../TP1), incorporando manejo de packages, excepciones y persistencia por serialización (Ejercicio 1), interfaces (Ejercicio 2), genéricos acotados y wildcards (Ejercicio 3), y clases anidadas junto con hilos (Ejercicio 4).
+Este proyecto escala el modelo desarrollado en el [TP1](https://github.com/juanigarciadev/PP-TP1-53555), incorporando manejo de packages, excepciones y persistencia por serialización (Ejercicio 1), interfaces (Ejercicio 2), genéricos acotados y wildcards (Ejercicio 3), y clases anidadas junto con hilos (Ejercicio 4).
 
 ## Estado actual
 
@@ -40,7 +40,7 @@ Cada módulo (excepto "Salir") tiene a su vez un submenú propio de **crear / mo
 - Próximos packages a incorporar según el enunciado: `certificacion` (interfaz `Certificable`, Ejercicio 2) e `hilos` (`EnvioTicketsThread`, Ejercicio 4).
 - El resto de las clases (`App`, `Utilidades`, y los módulos `Gestion*`) permanecen en el paquete por defecto, heredadas de la base del TP1.
 
-**Modelo (heredado del TP1, ver su [README](../TP1/README.md) para el detalle completo):**
+**Modelo (heredado del TP1, ver su [README](https://github.com/juanigarciadev/PP-TP1-53555/blob/main/README.md) para el detalle completo):**
 - `EventoUniversitario` — evento con ID, título, costo base, gratuidad, sala (agregación) y actividades (composición). Contador estático de instancias, constructor de copia, `calcularCostoEstimado()`.
 - `Actividad` — clase abstracta con `Charla` y `Taller` como subclases concretas (herencia y polimorfismo).
 - `Sala`, `Estudiante`, `Inscripcion` — igual que en TP1.
