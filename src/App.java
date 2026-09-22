@@ -1,69 +1,60 @@
+import excepciones.CupoExcedidoException;
 import modelo.Estudiante;
 import modelo.EventoUniversitario;
 import modelo.Sala;
+import modelo.actividades.Actividad;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Scanner;
+import java.io.File;
 
 public class App {
 
     public static void main(String[] args) {
-        Scanner teclado = new Scanner(System.in);
-        String opcion = "";
+        System.out.println(Utilidades.BLUE + "=== TP2 - EJERCICIO 1 ===" + Utilidades.RESET);
 
-        // Poblado de datos de prueba
-        List<Estudiante> estudiantes = new ArrayList<>();
-        List<EventoUniversitario> eventos = new ArrayList<>();
-        List<Sala> salas = new ArrayList<>();
-        Utilidades.poblarSistema(estudiantes, eventos, salas);
+        System.out.println(Utilidades.BLUE + "\n--- Creación de estudiantes, sala y evento ---" + Utilidades.RESET);
+        Estudiante ana = new Estudiante("1001", "Ana Pérez");
+        Estudiante juan = new Estudiante("1002", "Juan López");
+        Estudiante maria = new Estudiante("1003", "María Gómez");
 
-        do {
-            Utilidades.limpiarConsola();
-            System.out.println(Utilidades.BLUE + "======================================");
-            System.out.println("          SELECTOR DE MÓDULOS          ");
-            System.out.println("======================================" + Utilidades.RESET);
-            System.out.println("1. Gestión de eventos universitarios");
-            System.out.println("2. Gestión de estudiantes");
-            System.out.println("3. Inscripción a eventos");
-            System.out.println("4. Gestión de salas");
-            System.out.println("5. Salir del sistema");
-            System.out.print("Seleccione una opción: ");
+        Sala sala = new Sala(1, "Auditorio Principal");
 
-            opcion = teclado.nextLine();
+        EventoUniversitario evento = new EventoUniversitario("EVT-001", "Semana de la Ingeniería", 1000.0, false);
+        evento.asignarSala(sala);
+        evento.crearActividad("Introducción a IA", 2, "Charla", "Lic. Gómez", false);
+        evento.crearActividad("Taller de Robótica", 15, "Taller", null, true);
+        evento.mostrarDatos();
 
-            switch (opcion) {
-                case "1":
-                    GestionEventos moduloEventos = new GestionEventos();
-                    moduloEventos.iniciar(teclado, eventos, salas);
-                    break;
-                case "2":
-                    GestionEstudiantes moduloEstudiantes = new GestionEstudiantes();
-                    moduloEstudiantes.iniciar(teclado, estudiantes);
-                    break;
-                case "3":
-                    GestionInscripcion moduloInscripciones = new GestionInscripcion();
-                    moduloInscripciones.iniciar(teclado, eventos, estudiantes);
-                    break;
-                case "4":
-                    GestionSalas moduloSalas = new GestionSalas();
-                    moduloSalas.iniciar(teclado, salas);
-                    break;
-                case "5":
-                    System.out.println("Saliendo del sistema principal...");
-                    break;
-                default:
-                    System.out.println(Utilidades.RED + "======================================");
-                    System.out.println("Opción no válida. Intente de nuevo.");
-                    System.out.println("======================================" + Utilidades.RESET);
-                    try {
-                        Thread.sleep(1500);
-                    } catch (InterruptedException e) {
-                        System.out.println("El sleep fue interrumpido");
-                    }
-            }
-        } while (!opcion.equals("5"));
+        Actividad charla = evento.getActividades().get(0);
 
-        teclado.close();
+        System.out.println(Utilidades.BLUE + "\n--- Caso exitoso: inscripciones dentro del cupo ---" + Utilidades.RESET);
+        try {
+            charla.inscribir(ana);
+            charla.inscribir(juan);
+            System.out.println(Utilidades.GREEN + "Ana y Juan inscriptos correctamente." + Utilidades.RESET);
+            boolean guardadoOk = evento.persistirEvento();
+            System.out.println("Evento guardado: " + guardadoOk);
+            EventoUniversitario recuperado = evento.recuperarEvento(evento.getEventoId());
+            System.out.println("Evento recuperado: " + recuperado);
+        } catch (CupoExcedidoException e) {
+            System.out.println(Utilidades.RED + e.getMessage() + Utilidades.RESET);
+        } finally {
+            System.out.println("=================================");
+            System.out.println(Utilidades.YELLOW + "Realizando limpieza..." + Utilidades.RESET);
+            File eventoArchivo = new File(evento.getEventoId()+".dat");
+            eventoArchivo.delete();
+            System.out.println(Utilidades.GREEN + "Limpieza realizada con éxito" + Utilidades.RESET);
+        }
+
+        System.out.println(Utilidades.BLUE + "\n--- Caso fallido: cupo excedido ---" + Utilidades.RESET);
+        try {
+            charla.inscribir(maria);
+            System.out.println(Utilidades.GREEN + "María inscripta correctamente." + Utilidades.RESET);
+        } catch (CupoExcedidoException e) {
+            System.out.println(Utilidades.RED + e.getMessage() + Utilidades.RESET);
+        }
+
+        System.out.println(Utilidades.BLUE + "\n--- Estado final del evento ---" + Utilidades.RESET);
+        evento.mostrarDatos();
+        System.out.println("Cantidad de eventos: " + EventoUniversitario.getCantidadEventos());
     }
 }

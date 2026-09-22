@@ -4,10 +4,11 @@ import modelo.actividades.Actividad;
 import modelo.actividades.Charla;
 import modelo.actividades.Taller;
 
+import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class EventoUniversitario {
+public class EventoUniversitario implements Serializable {
     private final String Id;
     private String titulo;
     private double costoBase;
@@ -52,9 +53,9 @@ public class EventoUniversitario {
 
     public void crearActividad(String titulo, int cupo, String tipo, String disertanteOrNull, boolean requiereNotebook) {
         Actividad actividad;
-        if (tipo.equalsIgnoreCase("modelo.actividades.Charla")) {
+        if (tipo.equalsIgnoreCase("Charla")) {
             actividad = new Charla(titulo, cupo, disertanteOrNull);
-        } else if (tipo.equalsIgnoreCase("modelo.actividades.Taller")) {
+        } else if (tipo.equalsIgnoreCase("Taller")) {
             actividad = new Taller(titulo, cupo, requiereNotebook);
         } else {
             throw new IllegalArgumentException("Tipo de actividad desconocido: " + tipo);
@@ -82,13 +83,42 @@ public class EventoUniversitario {
         return actividades;
     }
 
+    public String getEventoId() {
+        return this.Id;
+    }
+
+    public boolean persistirEvento() {
+        try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(Id+".dat"))) {
+            oos.writeObject(this);
+            return true;
+        } catch (FileNotFoundException e) {
+            System.out.println("No se pudo crear: " + e.getMessage());
+            return false;
+        } catch (IOException e) {
+            System.out.println("No se pudo guardar: " + e.getMessage());
+            return false;
+        }
+    }
+
+    public EventoUniversitario recuperarEvento(String id) {
+        try (ObjectInput ois = new ObjectInputStream(new FileInputStream(id+".dat"))) {
+            return (EventoUniversitario) ois.readObject();
+        } catch (FileNotFoundException e) {
+            System.out.println("No se encontró el archivo: " + e.getMessage());
+            return null;
+        } catch (IOException | ClassNotFoundException e) {
+            System.out.println("No se pudo leer: " + e.getMessage());
+            return null;
+        }
+    }
+
     @Override
     public String toString() {
         return "Evento [ID: " + Id +
                 ", Título: " + titulo +
                 ", Costo: " + costoBase +
                 ", Gratuito: " + (gratuito ? "Si" : "No") +
-                ", modelo.Sala: " + (sala != null ? sala.getNombre() : "Sin asignar") + "]";
+                ", Sala: " + (sala != null ? sala.getNombre() : "Sin asignar") + "]";
     }
 
 }

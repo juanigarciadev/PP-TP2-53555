@@ -1,6 +1,8 @@
 package modelo;
 
-public class Sala {
+import java.io.Serializable;
+
+public class Sala implements Serializable {
     private int id;
     private String nombre;
 
@@ -19,6 +21,6 @@ public class Sala {
 
     @Override
     public String toString() {
-        return "modelo.Sala #" + id + ": " + nombre;
+        return "Sala #" + id + ": " + nombre;
     }
 }

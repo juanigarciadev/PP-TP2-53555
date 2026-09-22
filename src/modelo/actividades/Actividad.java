@@ -1,11 +1,14 @@
 package modelo.actividades;
+import excepciones.CupoExcedidoException;
 import modelo.Inscripcion;
 import modelo.Estudiante;
+
+import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
-public abstract class Actividad {
+public abstract class Actividad implements Serializable {
     public static final int CUPO_MINIMO = 1;
 
     private static int contadorId = 1;
@@ -22,11 +25,17 @@ public abstract class Actividad {
         this.inscripciones = new ArrayList<>();
     }
 
-    public Inscripcion inscribir(Estudiante estudiante) {
+    public Inscripcion inscribir(Estudiante estudiante) throws CupoExcedidoException {
+        int inscripcionesLength = inscripciones.size();
+
+        if (inscripcionesLength >= cupoMaximo) {
+            throw new CupoExcedidoException("Cupo lleno (" + cupoMaximo + "/" +cupoMaximo + ")" + ". No fue posible realizar la inscripción a " + titulo + ".");
+        }
+
         Inscripcion inscripcion = new Inscripcion(estudiante, LocalDate.now(), "Confirmada");
         inscripciones.add(inscripcion);
         return inscripcion;
-    };
+    }
 
     public void mostrarInscripciones() {
         for (Inscripcion inscripcion: inscripciones) {

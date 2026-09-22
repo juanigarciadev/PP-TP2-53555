@@ -1,6 +1,8 @@
 package modelo.actividades;
 
-public class Taller extends Actividad {
+import java.io.Serializable;
+
+public class Taller extends Actividad implements Serializable {
     private boolean requiereNotebook;
 
     public Taller(String titulo, int cupoMaximo, boolean requiereNotebook) {
@@ -14,5 +16,5 @@ public class Taller extends Actividad {
     }
 
     @Override
-    public String getTipo() { return "modelo.actividades.Taller"; }
+    public String getTipo() { return "Taller"; }
 }
