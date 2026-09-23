@@ -2,6 +2,7 @@ package modelo;
 
 import modelo.actividades.Actividad;
 import modelo.actividades.Charla;
+import modelo.actividades.Curso;
 import modelo.actividades.Taller;
 
 import java.io.*;
@@ -52,15 +53,39 @@ public class EventoUniversitario implements Serializable {
     }
 
     public void crearActividad(String titulo, int cupo, String tipo, String disertanteOrNull, boolean requiereNotebook) {
+        crearActividad(titulo, cupo, tipo, disertanteOrNull, requiereNotebook, 0);
+    }
+
+    public void crearActividad(String titulo, int cupo, String tipo, String disertanteOrNull, boolean requiereNotebook, int nivel) {
         Actividad actividad;
         if (tipo.equalsIgnoreCase("Charla")) {
             actividad = new Charla(titulo, cupo, disertanteOrNull);
         } else if (tipo.equalsIgnoreCase("Taller")) {
             actividad = new Taller(titulo, cupo, requiereNotebook);
+        } else if (tipo.equalsIgnoreCase("Curso")) {
+            actividad = new Curso(titulo, cupo, nivel);
         } else {
             throw new IllegalArgumentException("Tipo de actividad desconocido: " + tipo);
         }
         actividades.add(actividad);
+    }
+
+    public <T extends Actividad> List<T> filtrarActividadesPorTipo(Class<T> tipo) {
+        List<T> resultado = new ArrayList<>();
+        for (Actividad actividad : actividades) {
+            if (tipo.isInstance(actividad)) {
+                resultado.add(tipo.cast(actividad));
+            }
+        }
+        return resultado;
+    }
+
+    public double calcularCostoMateriales(List<? extends Actividad> actividades) {
+        double total = 0;
+        for (Actividad actividad : actividades) {
+            total += actividad.calcularCostoMateriales();
+        }
+        return total;
     }
 
     public void mostrarActividades() {

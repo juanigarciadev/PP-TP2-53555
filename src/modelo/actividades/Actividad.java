@@ -32,7 +32,7 @@ public abstract class Actividad implements Serializable {
             throw new CupoExcedidoException("Cupo lleno (" + cupoMaximo + "/" +cupoMaximo + ")" + ". No fue posible realizar la inscripción a " + titulo + ".");
         }
 
-        Inscripcion inscripcion = new Inscripcion(estudiante, LocalDate.now(), "Confirmada");
+        Inscripcion inscripcion = new Inscripcion(estudiante, LocalDate.now(), "Pendiente");
         inscripciones.add(inscripcion);
         return inscripcion;
     }
@@ -41,6 +41,14 @@ public abstract class Actividad implements Serializable {
         for (Inscripcion inscripcion: inscripciones) {
             System.out.println(inscripcion);
         }
+    }
+
+    public String getTitulo() {
+        return titulo;
+    }
+
+    public List<Inscripcion> getInscripciones() {
+        return inscripciones;
     }
 
     public final void mostrarIdentificacion() {
